@@ -10,7 +10,14 @@ object ListManipulationExercise02 {
    * As usual, various ways exist: pattern matching, folding, ...
    */
   def maxElementInList(l: List[Int]): Int = {
-    error("fix me")
+    l.reduce((x, y) => {
+      if (x>y) x else y
+    })
+
+    l match {
+      case h :: t => if (h > maxElementInList(t)) h else maxElementInList(t)
+      case h :: Nil => h
+    }
   }
 
   /**
@@ -18,7 +25,7 @@ object ListManipulationExercise02 {
    * of the two list
    */
   def sumOfTwo(l1: List[Int], l2: List[Int]): List[Int] = {
-    error("fix me")
+    l1.zip(l2).map( x => x._1+x._2 )
   }
 
   /**
@@ -26,7 +33,8 @@ object ListManipulationExercise02 {
    * method above
    */
   def sumOfMany(l: List[Int]*): List[Int] = {
-    error("fix me")
+    // l now is an array
+    l.toList.reduceLeft( (l1, l2) => sumOfTwo(l1, l2) )
   }
 
   case class Person(age: Int, firstName: String, lastName: String)
@@ -61,6 +69,11 @@ object ListManipulationExercise02 {
       validMenNames += man.firstName
     }
     List(validBoyNames.toList, validMenNames.toList)
+  }
+
+  def separateTheMenFromTheBoys2(persons: List[Person]): List[List[String]] = {
+    val (l_boy, l_man) = persons.partition(_.age <= 18)
+    List(l_boy.map(_.firstName).sorted, l_man.map(_.firstName).sorted)
   }
 
 }

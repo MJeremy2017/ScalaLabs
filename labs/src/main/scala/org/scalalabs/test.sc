@@ -20,3 +20,8 @@ l :: l.tail
 val bl = ListBuffer(1, 2)
 bl += 2
 bl
+3.3.max(2)
+
+l.zip(l)
+
+List(3, 4, 2, 1).partition(_ > 3)
