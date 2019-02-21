@@ -25,3 +25,11 @@ bl
 l.zip(l)
 
 List(3, 4, 2, 1).partition(_ > 3)
+
+val alpha = 'a' to 'z'
+val input = "ejp mysljylc k"
+input.filter(_ != ' ').filter(alpha.contains(_))
+
+val m = "asda".zip("sdas").toMap ++ Map("a" -> "a")
+
+"aaas".map(m(_)).mkString

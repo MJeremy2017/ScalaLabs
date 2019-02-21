@@ -33,7 +33,15 @@ object CollectionExercise01 {
    *
    */
   def googleCodeJamGooglerese(lines: String*): Seq[String] = {
-    error("fix me")
+    val input = "ejp mysljylc kd kxveddknmc re jsicpdrysi rbcpc ypc rtcsra dkh wyfrepkym veddknkmkrkcd de kr kd eoya kw aej tysr re ujdr lkgc jv " filterNot (_ == ' ')
+    val output = "our language is impossible to understand there are twenty six factorial possibilities so it is okay if you want to just give up" filterNot (_ == ' ')
+
+    val alphabet = 'a' to 'z'
+    val inputFilter = input.filter(_ != ' ').filter(alphabet.contains(_))
+    val outputFilter = output.filter(_ != ' ').filter(alphabet.contains(_))
+
+    val mapping = inputFilter.zip(outputFilter).toMap ++ Map(' ' -> ' ')
+    lines.map(sent => sent.map(ch => mapping.getOrElse(ch, "*")).mkString )
   }
 }
 /*========================================================== */
