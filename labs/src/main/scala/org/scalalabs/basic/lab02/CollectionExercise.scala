@@ -58,7 +58,9 @@ object CollectionExercise02 {
    * using a functional approach.
    */
   def groupAdultsPerAgeGroup(persons: Seq[Person]): Map[Int, Seq[Person]] = {
-    error("fix me")
+    // group adults(age >= 18) by every 10 year partition
+    val res = persons.filter(_.age >= 18).groupBy(_.age/10*10)
+    res
   }
 }
 
@@ -72,8 +74,13 @@ object CollectionExercise03 {
    * checkValuesIncrease(Seq(1,2,3)) == true
    * checkValuesIncrease(Seq(1,2,2)) == false
    */
-  def checkValuesIncrease[T <% Ordered[T]](seq: Seq[T]): Boolean =
-    error("fix me")
+  def checkValuesIncrease[T <% Ordered[T]](seq: Seq[T]): Boolean = {
+   seq match {
+     case h :: t => if (h < t.head) checkValuesIncrease(t) else false
+     case _ :: Nil => true
+   }
+    //if (seq.size > 1) seq.sliding(2).forall(l => l(0) < l(1)) else true
+  }
 
 }
 /*========================================================== */
@@ -84,7 +91,7 @@ object CollectionExercise04 {
    * To keep it simple it's ok to use String.split to extract all words of a sentence.
    */
   def calcLengthLongestWord(lines: String*): Int = {
-    error("fix me")
+    lines.flatMap(_.split(" ").map(_.length)).max
   }
 }
 
@@ -96,7 +103,9 @@ object CollectionExercise05 {
    * E.g. Seq(1,2,3) is Seq(2)
    */
   def filterWithFoldLeft(seq: Seq[Int]): Seq[Int] = {
-    error("fix me")
+    seq.foldLeft(List[Int]())( (acc, v) => {
+      if (v % 2 == 0) acc ++ List(v) else acc
+    })
   }
 
   /**
@@ -105,7 +114,10 @@ object CollectionExercise05 {
    * E.g: Seq(1,2,3) is Map(true -> Seq(2), false -> Seq(1,3))
    */
   def groupByWithFoldLeft(seq: Seq[Int]): Map[Boolean, Seq[Int]] = {
-    error("fix me")
+    seq.foldLeft(Map[Boolean, Seq[Int]]())( (acc, v) => {
+      val key = v %2  == 0
+      acc + (key -> (acc.getOrElse(key, Seq[Int]()) :+ v) )  // update map by + (key -> value)
+    })
   }
 }
 
