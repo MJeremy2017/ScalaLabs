@@ -51,3 +51,7 @@ m + ("a" -> 3)
 
 for (i <- 1 to 3) yield i
 21.toString.split("").reverse
+System.currentTimeMillis()
+
+val f = (x: Int) => x+1
+f(3)

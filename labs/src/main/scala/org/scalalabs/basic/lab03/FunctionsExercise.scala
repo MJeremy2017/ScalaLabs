@@ -21,8 +21,13 @@ import sys._
  */
 object FunctionsExercise01 {
 
-  def doWithText( /* provide correct function signature */ ): String = {
-    error("fix me")
+  def doWithText( handleFun: String => String/* provide correct function signature */ ): String = {
+    val scanner = new Scanner(getClass.getResourceAsStream("/text.txt"))
+    try {
+      scanner.useDelimiter("\\Z");
+      val content = scanner.next()
+      handleFun(content)
+    } finally scanner.close()
   }
 
   def reverseText(): String = {
@@ -59,8 +64,12 @@ object FunctionsExercise02 {
 
   private def logPerf(elapsed: Long) = printed = s"The execution took: $elapsed ms"
 
-  def measure[T]( /* provide correct method parameter */ ): T = {
-    error("fix me")
+  /** https://stackoverflow.com/questions/4543228/whats-the-difference-between-and-unit/4545703#4545703 **/
+  def measure[T]( block: => T ): T = {  // whole thing passed is substitute as block
+    val start = System.currentTimeMillis()
+    val res = block
+    logPerf(System.currentTimeMillis() - start)
+    res
   }
 
 }
@@ -75,7 +84,8 @@ object FunctionsExercise03 {
 
   def plusOne(x: Int): Int = {
     //implement this by using the plus method with a partially applied construct
-    error("fix me")
+    val p = plus(1, _:Int)
+    p(x)
   }
 
   def plus(x: Int, y: Int): Int = {
