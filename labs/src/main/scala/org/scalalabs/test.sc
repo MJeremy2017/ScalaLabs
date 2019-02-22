@@ -48,3 +48,6 @@ val seq = Seq(1, 2, 3)
 seq.map(x => (x%2==0, x)).groupBy(_._1)
 
 m + ("a" -> 3)
+
+for (i <- 1 to 3) yield i
+21.toString.split("").reverse
