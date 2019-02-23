@@ -74,8 +74,27 @@ sampleRooms.getOrElse(2, "dd")  // return None
 Some(None).getOrElse("empty")
 sampleRooms.values
 sampleRooms.values.map(_.getOrElse(0))
+sampleRooms + (3 -> "ss")
 
 Exception.allCatch.opt("asdf".toInt)
 
 // Exception.allCatch.opt(None.toInt)
 sampleRooms.values.map(x => Exception.allCatch.opt(x.get) )
+
+sampleRooms.getClass
+
+case class P(name: String)
+ P("jack") match {
+   case p: P => s"it is ${p.name}"
+ }
+
+None match {
+  case None => "none"
+}
+
+classOf[String]
+
+'a  // this is a symbol
+
+val msg = "dsfa"
+Map(msg.getClass -> msg.length)
