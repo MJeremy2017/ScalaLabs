@@ -1,3 +1,4 @@
+import scala.util.control._
 import scala.collection.mutable.ListBuffer
 
 val l = List(1, 2, 3)
@@ -55,3 +56,26 @@ System.currentTimeMillis()
 
 val f = (x: Int) => x+1
 f(3)
+
+def highF(x: Int)(innerF: Int => Int) = {
+  innerF(x)
+}
+
+highF(3)(x => x+1)
+Some(12).get
+Some(None).get
+
+val sampleRooms = Map(1 -> Some("12"), 2 -> None, 3 -> Some("locked"), 4 -> Some("14"), 5 -> Some("8"), 6 -> Some("locked"))
+
+sampleRooms.getOrElse(1, Some("not"))
+Some("g").get == "g"
+None.getOrElse("empty")  // return empty
+sampleRooms.getOrElse(2, "dd")  // return None
+Some(None).getOrElse("empty")
+sampleRooms.values
+sampleRooms.values.map(_.getOrElse(0))
+
+Exception.allCatch.opt("asdf".toInt)
+
+// Exception.allCatch.opt(None.toInt)
+sampleRooms.values.map(x => Exception.allCatch.opt(x.get) )
