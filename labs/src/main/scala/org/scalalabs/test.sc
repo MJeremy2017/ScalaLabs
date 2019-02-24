@@ -98,3 +98,50 @@ classOf[String]
 
 val msg = "dsfa"
 Map(msg.getClass -> msg.length)
+
+// List(1, 2, 3).foldLeft(0)(_ < _)
+
+def checkValuesIncrease(seq: Seq[Int]): Boolean = {
+  seq match {
+    case h :: Nil => true
+    case h :: t if h < t.head => checkValuesIncrease(t)
+    case _ => false
+  }
+}
+
+checkValuesIncrease(List(1, 3, 3))
+
+List(1, 1, 2, 3).span(_ == 3)
+
+List(1, 1, 2, 3).partition(_==2)
+List(1).partition(_==1)
+
+def compress[T](in: List[T]): List[T] = {
+  in match {
+    case h :: t => {
+      val (same, rest) = in.partition(_ == h)
+      same.head :: compress(rest)
+    }
+    case Nil => Nil
+  }
+}
+
+compress(List(1, 1, 1, 2, 3, 1))
+
+val ll = List(1, 1, 1, 2, 3, 1)
+
+def amountEqualMembers[T](in: List[T]): List[(Int, T)] = {
+  in match {
+    case h :: t => {
+      val (same, rest) = in.partition(_ == h)
+      (same.length, same.head) :: amountEqualMembers(rest)
+    }
+    case Nil => Nil
+  }
+}
+
+amountEqualMembers(ll)
+
+List(1, 2).zip(List("a", "b", "c"))
+
+ll.take(2)
