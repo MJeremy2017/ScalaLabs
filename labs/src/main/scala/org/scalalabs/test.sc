@@ -151,3 +151,4 @@ ll.take(2)
 // implicit value
 implicit val a = "test"
 val b = implicitly[String]  // test
+a.getClass//.getName
