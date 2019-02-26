@@ -147,3 +147,7 @@ List(1, 2).zip(List("a", "b", "c"))
 ll.take(2)
 
 "daf dafe ee".span(!_.isSpaceChar)
+
+// implicit value
+implicit val a = "test"
+val b = implicitly[String]A

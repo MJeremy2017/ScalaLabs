@@ -11,6 +11,7 @@ import scala.util.control._
 
 case class Euro(val euros: Int, val cents: Int) {
   lazy val inCents: Int = euros * 100 + cents
+  def s = "s"
 }
 
 object Euro {
@@ -31,6 +32,17 @@ object Euro {
  * 2 euros >45< cents
  */
 object Exercise01 {
+  // copied
+  class EuroBuilder(val amount: Int, val inCents: Int = 0) {
+    def euros = new EuroBuilder(0, inCents + amount * 100)
+    def cents = new EuroBuilder(0, inCents + amount)
+    def apply(amount: Int) = new EuroBuilder(amount, inCents)
+  }
+
+  //implicit def fromIntToEuroBuilder(value: Int) = new EuroBuilder(value)
+  implicit def fromEuroBuilderToEuro(b: EuroBuilder) = Euro.fromCents(b.inCents)
+
+  new EuroBuilder(3).s  // this call implicit conversion
 
 }
 
@@ -40,6 +52,13 @@ object Exercise01 {
  * so that the call to Seq(Euro(1,5), Euro(3,2)).sorted compiles.
  */
 object Exercise02 {
+  implicit object OrderedEuro extends Ordering[Euro] {
+    override def compare(x: Euro, y: Euro): Int = {
+      x.inCents.compare(y.inCents)
+    }
+  }
+
+  Seq(Euro(1,5), Euro(3,2)).sorted
 
 }
 
@@ -54,11 +73,11 @@ object Exercise02 {
  */
 object Exercise03 {
   object JsonConverter {
-    def convertToJson[T /**provide context bound*/ ](t: T): JValue = {
-      ???
+    def convertToJson[T:JsonConverter /**provide context bound*/ ](t: T): JValue = {
+      implicitly[JsonConverter[T]].toJSON(t)
     }
-    def parseFromJson[T /**provide context bound*/ ](json: JValue): T = {
-      ???
+    def parseFromJson[T:JsonConverter /**provide context bound*/ ](json: JValue): T = {
+      implicitly[JsonConverter[T]].fromJson(json)
     }
   }
 
