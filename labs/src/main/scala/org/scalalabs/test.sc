@@ -151,4 +151,26 @@ ll.take(2)
 // implicit value
 implicit val a = "test"
 val b = implicitly[String]  // test
-a.getClass//.getName
+a.getClass //.getName
+
+"adf.tt".split("\\.")
+
+object FileName {
+
+  def apply(name: String, suffix: String) = name + "." + suffix
+
+  def unapply(name: String): Option[(String, String)] = {
+    //TODO implement simple argument extractor
+    val parts = name.split("\\.")
+    if (parts.length == 2) Some(parts(0), parts(1)) else None
+  }
+}
+
+val file = FileName("test", "txt")
+file match {
+  case FileName(a, _) => a
+  case _ => None
+}
+
+val re = """(\(?\d{3}[-\)]?\d{7})""".r
+re.findAllIn("040-2920029").toList

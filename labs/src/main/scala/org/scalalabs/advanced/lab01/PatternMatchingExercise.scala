@@ -29,12 +29,15 @@ object PatternMatchingExercise {
    * -> MyNotes txt
    */
   object FileName {
+
+    def apply(name: String, suffix: String) = name + "." + suffix
+
     def unapply(name: String): Option[(String, String)] = {
       //TODO implement simple argument extractor
-      None
+      val parts = name.split("\\.")
+      if (parts.length == 2) Some(parts(0), parts(1)) else None
     }
   }
-
   /**
    * Use the Path object to write a variable argument extractor,
    * which extracts the elements of a path in reverse order.
@@ -44,9 +47,17 @@ object PatternMatchingExercise {
    * -> scala development anyuser home
    */
   object Path {
+    def apply(s: Seq[String]) = s.foldLeft("/")(_ + _)
+
     def unapplySeq(path: String): Option[Seq[String]] = {
       //TODO implement variable argument extractor
-      None
+      val parts = path.split("/").toList  // must to list
+      if (parts.length > 0) {
+        parts match {
+          case "" :: tail => Some(tail.reverse)
+          case l => Some(l.reverse)
+        }
+      } else None
     }
   }
 
@@ -58,7 +69,10 @@ object PatternMatchingExercise {
    */
   def fileNameRetriever(path: String) = {
     //TODO implement
-    ""
+    path match {
+      case Path(FileName(h, _), _*) => h
+      case _ => "no match"
+    }
   }
 
   /**
@@ -73,7 +87,7 @@ object PatternMatchingExercise {
    * E.g.:
    * 2010-04-08T04:08:05.889Z;PRF;server1;1004080608005100002;Processing took 200 ms
    */
-  val PerfLogLineRE = """TODO_IMPLEMENT_REGEXP""".r
+  val PerfLogLineRE =  """^(.{24});PRF;server(\d);(\d+);.+\s(\d+).*""".r
 
   /**
    * Define a regexp and use the 'loop' function to iterate over a piece of text
