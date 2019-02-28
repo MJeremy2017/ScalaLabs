@@ -174,3 +174,11 @@ file match {
 
 val re = """(\(?\d{3}[-\)]?\d{7})""".r
 re.findAllIn("040-2920029").toList
+
+def curriedStringConcat(first: String)(second: String) = /*DO SOMETHING HERE*/ {
+  first + " " + second
+}
+
+curriedStringConcat("hello")("world")
+val ff = curriedStringConcat("hello")_ // a function
+ff("world") // hello world
