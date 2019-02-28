@@ -21,7 +21,7 @@ class ParserCombinatorExercise extends JavaTokenParsers {
   def preposition: Parser[Any] = "over"
 
   def nounPhrase: Parser[Any] = error("TODO")
-  def prepositionPhrase: Parser[Any] = error("TODO")
+  def prepositionPhrase: Parser[Any] = preposition ~ noun
   def verbPhrase: Parser[Any] = error("TODO")
   def sentence: Parser[Any] = error("TODO")
 
@@ -31,7 +31,7 @@ class ParserCombinatorExercise extends JavaTokenParsers {
    * calculates the result
    */
 
-  def parsedDigit: Parser[Double] = error("TODO")
+  def parsedDigit: Parser[Double] = floatingPointNumber ^^ (_.toDouble)
 
   def plus: Parser[Double] = error("TODO")
 
