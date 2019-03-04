@@ -50,7 +50,7 @@ object ComboMeal {
    * fields should be taken over from the values that they already had.
    *
    */
-  def withBurger /*TODO insert type paarameters here... */ (burger: String)(b: Builder[ /*TODO insert proper type parameters here*/ _, _, _]): Builder[ /*TODO insert proper type parameters here*/ _, _, _] =
+  def withBurger /*TODO insert type parameters here... */ (burger: String)(b: Builder[ /*TODO insert proper type parameters here*/ _, _, _]): Builder[ /*TODO insert proper type parameters here*/ _, _, _] =
     error("Implement me")
 
   /**

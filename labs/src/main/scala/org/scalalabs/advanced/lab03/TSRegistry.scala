@@ -40,16 +40,22 @@ object ManifestSample {
      * Implement the add method. You should use the Manifest as an implicit parameter in order to know the
      * runtime type of value B, which we need to know to implement the safeGet method properly.
      */
-    def add(k: A, v: B) = { /*TODO implement me */ }
+    def add(k: A, v: B)(implicit m: Manifest[B]) = {
+      map.updated(k, (m, v))
+    }
 
     /**
      * This is the method that should do the type safe get: i.e. it should return Some(value)
      * iff the given type parameter matches, or is a supertype of the value belonging to the key.
      */
-    def safeGet[T](key: A): Option[T] = {
+    def safeGet[T](key: A)(implicit m: Manifest[B]): Option[T] = {
       val ov = map.get(key)
       //TODO implement using manifest
-      None
+      ov match {
+        case Some((ovm: Manifest[_], v: Any)) =>
+          if (ovm <:< m) Some(v.asInstanceOf[T]) else None
+        case _ => None
+      }
     }
   }
 
