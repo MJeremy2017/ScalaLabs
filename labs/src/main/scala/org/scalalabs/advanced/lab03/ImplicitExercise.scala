@@ -1,5 +1,7 @@
 package org.scalalabs.advanced.lab03
 
+import org.scalalabs.advanced.lab03.Ord.PimpedList
+
 import sys._
 /**
  * User: arjan
@@ -22,7 +24,9 @@ trait Ord[A] {
    * You can apply the Ord as an implicit parameter to achieve this, so that the method can just be called as max(List(a, b, c)) where the elements
    * of the List can be converted to an Ord by an implicit conversion, defined in the Ord object.
    */
-  def max[T](xs: List[T]) = error("implement me")
+  def max[T](xs: List[T])(implicit ord: Ord[T]) = {
+    xs.reduceLeft((a, b) => if (ord.compare(a, b) < 0) b else a)
+  }
 
   /**
    * TODO implement the min method, so that it returns the min element of the given list. The elements in the list are supposed to be implementing
@@ -30,7 +34,9 @@ trait Ord[A] {
    * You can apply the Ord as an implicit parameter to achieve this, so that the method can just be called as max(List(a, b, c)) where the elements
    * of the List can be converted to an Ord by an implicit conversion, defined in the Ord object.
    */
-  def min[T](xs: List[T]) = error("implement me")
+  def min[T](xs: List[T])(implicit ord: Ord[T]) = {
+    xs.reduceLeft( (a, b) => if (ord.compare(a, b) < 0) a else b)
+  }
 
   /**
    * TODO implement the minFor method, so that it returns the min element of the given list. The Ordering is defined by the given
@@ -38,7 +44,10 @@ trait Ord[A] {
    * is supposed to be implicitly convertable to the Ord trait.
    * the Ord trait itself. Again, this can be achieved by passing Ord as an implicit parameter to achieve this, and defined the required implicit conversions in the Ord object.
    */
-  def minFor[T](xs: List[T], f: T => A) = error("implement me")
+  def minFor[T](xs: List[T], f: T => A)(implicit ord: Ord[A]) = {
+    val xsf = xs.map(f(_))
+    xsf.reduceLeft((a, b) => if (ord.compare(a, b) < 0) a else b)
+  }
 
   /**
    * TODO implement the minFor method, so that it returns the max element of the given list. The Ordering is defined by the given
@@ -46,14 +55,19 @@ trait Ord[A] {
    * is supposed to be implicitly convertable to the Ord trait.
    * the Ord trait itself. Again, this can be achieved by passing Ord as an implicit parameter to achieve this, and defined the required implicit conversions in the Ord object.
    */
-  def maxFor[T](xs: List[T], f: T => A) = error("implement me")
+  def maxFor[T](xs: List[T], f: T => A)(implicit ord: Ord[A]) = {
+    val xsf = xs.map(f(_))
+    xsf.reduceLeft((a, b) => if (ord.compare(a, b) < 0) b else a)
+  }
   /**
    * TODO implement the on method, so that it returns the and Ord that is defined by the given
    * function f, which takes a list parameter, and returns an element of a possibly different type (denoted by A). The return type of the function f
    * is supposed to be implicitly convertable to the Ord trait.
    * the Ord trait itself. Again, this can be achieved by passing Ord as an implicit parameter to achieve this, and defined the required implicit conversions in the Ord object.
    */
-  def on[T](f: T => A): Ord[T] = error("implement me")
+  def on[T](f: T => A): Ord[T] = new Ord[T] {
+    def compare(x: T, y: T) = self.compare(f(x), f(y))
+  }
 }
 
 object Ord {
@@ -64,6 +78,16 @@ object Ord {
   def apply[A](implicit ord: Ord[A]) = ord
 
   //TODO defining implicit conversions from String and Int classes to the Ord trait here.
+  implicit def stringOrd = new Ord[String] {
+    override def compare(x: String, y: String): Int = x.compareTo(y)
+  }
+
+  implicit def intOrd = new Ord[Int] {
+    override def compare(x: Int, y: Int): Int = x.compareTo(y)
+  }
+
+  implicit def userOrdByName = new Ord[User] {
+    override def compare(x: User, y: User) = x.name.compareTo(y.name)
 
 }
 
@@ -84,7 +108,9 @@ trait PimpedList[A] {
    * The elements of the List should be instances of the Ord class, therefore, and should be defined implicitly.
    * The implicit conversion to the Ord should also be in scope in order to compile this correctly.
    */
-  def mymax /*TODO pass on type parameters and implicit parameters here*/ : A = error("TODO implement me")
+  def mymax[B >: A](implicit ord: Ord[B]) : A = {
+    l.reduceLeft( (x, y) => if (ord.compare(x, y) > 0) x else y)
+  }
   /**
    * A 'mymin', instead of the 'normal' min defined on a list, that determines the minimum element based
    * on a given Ord.
@@ -94,7 +120,10 @@ trait PimpedList[A] {
    * The elements of the List should be instances of the Ord class, therefore, and should be defined implicitly.
    * The implicit conversion to the Ord should also be in scope in order to compile this correctly.
    */
-  def mymin /*TODO pass on type parameters and implicit parameters here*/ : A = error("TODO implement me")
+  def mymin[B >: A](implicit ord: Ord[B]) : A = {
+    l.reduceLeft( (x, y) => if (ord.compare(x, y) > 0) x else y)
+  }
+}
 
 }
 
@@ -157,14 +186,22 @@ object Monoid {
    * Note that this object, and the implicit conversion it defines, will be in scope when the ImplicitExercise._ is imported,
    * because it is the companion module of the Monoid trait.
    */
-  implicit object stringMonoid //TODO implement the Monoid trait for Strings
+  implicit object stringMonoid extends Monoid[String] {
+    override def append(x: String, y: String): String = x.concat(y)
+
+    override def empty: String = ""
+  }
 
   /**
    * This implicit object should implement the Monoid trait for an Int.
    * Implement the appropriate methods for append and empty that are suitable for Strings.
    * This object is used in various unit tests that use the 'add' method.
    */
-  implicit object intMonoid //TODO implement the Monoid trait for Ints
+  implicit object intMonoid extends Monoid[Int] {
+    override def append(x: Int, y: Int): Int = x + y
+
+    override def empty: Int = 0
+  }
 
 }
 
@@ -172,11 +209,20 @@ object AddUsingVarargsAndScalaNumeric {
   //TODO implement the add method such that add(1,2,3,4,5) works. The argument should take a type parameter (which it now doesn't), and return that type.
   //In this case, add(1,2,3) should return an Int, but add(1L, 2L, 3L) returns a long. The type in the argument list is now Any, but that should be changed as well.
   //Lastly, you can use (implicitly) the Numeric trait of Scala to implement the addition of the various types.
-  def add(a: Any*) = error("implement me")
+  implicit def toAddableList[A](xs: List[A]) = new AddableList[A] { val value = xs }
+
+  implicit def toPimpedList[A](xs: List[A]) = new PimpedList[A] { val l = xs }
+
+  def add[T](xs: List[T])(implicit m: Monoid[T]): T = if (xs.isEmpty) m.empty else m.append(xs.head, add(xs.tail))
+
+  def add[A](ns: A*)(implicit n: Numeric[A]) = {
+    ns reduceLeft (n plus (_, _))
+  }
 }
 
 object ListToPimpedList {
   //TODO implement implicit conversion for list to pimped list trait, so that the various methods in that class are supported.
+  implicit def toPimpedList[A](xs: List[A]) = new PimpedList[A] { val l = xs }
 }
 object ImplicitExercise {
 
@@ -188,7 +234,7 @@ object ImplicitExercise {
   /**
    * Defines an add method that takes a list as an explicit argument.
    * As you see, there is also an implicit variable of the type Monoid defined.
-   * This assumes that there is an implicit variable in scope thath has this type.
+   * This assumes that there is an implicit variable in scope that has this type.
    *
    * If no such variable is in scope, compilation will fail.
    */

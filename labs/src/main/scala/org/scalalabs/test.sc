@@ -182,3 +182,9 @@ def curriedStringConcat(first: String)(second: String) = /*DO SOMETHING HERE*/ {
 curriedStringConcat("hello")("world")
 val ff = curriedStringConcat("hello")_ // a function
 ff("world") // hello world
+
+trait a {
+  def s = "sss"
+}
+
+val sss = new a
